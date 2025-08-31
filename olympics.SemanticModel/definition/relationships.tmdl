@@ -1,4 +1,0 @@
-relationship 255dad85-6ea7-6150-8528-16a5800689b7
-	fromColumn: athlete.NOC
-	toColumn: noc_regions.NOC
-
