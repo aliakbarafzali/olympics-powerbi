@@ -1,0 +1,42 @@
+table Measure_
+	lineageTag: e7ee0b41-02bf-407f-bb7f-aa9f40cc78e5
+
+	measure 'Total Medal' = CALCULATE(COUNT(athlete[Medal]), FILTER(athlete, athlete[MEDAL] <> "NA"))
+		formatString: #,0
+		lineageTag: d3c70a10-939e-498f-a957-6eb1207d5681
+
+	measure 'Gold Medals' = CALCULATE(COUNT(athlete[Medal]), FILTER(athlete, athlete[MEDAL] = "Gold"))
+		formatString: #,0
+		lineageTag: 81c3a220-2a92-4296-919b-c74758553eb7
+
+	measure 'Silver Medals' = CALCULATE(COUNT(athlete[Medal]), FILTER(athlete, athlete[MEDAL] = "Silver"))
+		formatString: #,0
+		lineageTag: 8c3c21d6-dca7-4002-b449-906ed455dba6
+
+	measure 'Bronze Medals' = CALCULATE(COUNT(athlete[Medal]), FILTER(athlete, athlete[MEDAL] = "Bronze"))
+		formatString: #,0
+		lineageTag: 471fffb7-7d0b-4498-94d8-c03e71f62d6d
+
+	measure 'Total Athlete' = CALCULATE(DISTINCTCOUNT(athlete[ID]))
+		formatString: #,0
+		lineageTag: 7f6acda1-3f91-456f-be09-9a4c93af84a3
+
+	column 'Colonne 1'
+		dataType: string
+		lineageTag: 16c0b3b4-bf49-4746-adc1-04d447fe6a7c
+		summarizeBy: none
+		sourceColumn: Colonne 1
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Measure_ = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"Colonne 1" = _t]),
+				    #"Type modifié" = Table.TransformColumnTypes(Source,{{"Colonne 1", type text}})
+				in
+				    #"Type modifié"
+
+	annotation PBI_ResultType = Table
+

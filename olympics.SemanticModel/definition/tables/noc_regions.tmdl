@@ -1,0 +1,42 @@
+table noc_regions
+	lineageTag: dd41672e-c9c1-4afe-8f95-01b7a6b99d3f
+
+	column NOC
+		dataType: string
+		lineageTag: 53763a0d-f474-4e06-93b9-e2c713d00ed0
+		summarizeBy: none
+		sourceColumn: NOC
+
+		annotation SummarizationSetBy = Automatic
+
+	column Country
+		dataType: string
+		lineageTag: a02d1ceb-2904-4097-b1e4-da870f40feef
+		summarizeBy: none
+		sourceColumn: Country
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column3
+		dataType: string
+		lineageTag: a3852d78-cdb4-4330-acc4-c90683e30754
+		summarizeBy: none
+		sourceColumn: Column3
+
+		annotation SummarizationSetBy = Automatic
+
+	partition noc_regions = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\aaa69\OneDrive\Documents\Olympics_Dashboard\noc_regions.csv"),[Delimiter=",", Columns=3, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Type modifié" = Table.TransformColumnTypes(Source,{{"Column1", type text}, {"Column2", type text}, {"Column3", type text}}),
+				    #"Lignes filtrées" = Table.SelectRows(#"Type modifié", each [Column1] <> null and [Column1] <> ""),
+				    #"Colonnes renommées" = Table.RenameColumns(#"Lignes filtrées",{{"Column1", "NOC"}, {"Column2", "Country"}})
+				in
+				    #"Colonnes renommées"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
